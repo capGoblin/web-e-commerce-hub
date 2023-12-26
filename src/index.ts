@@ -126,5 +126,5 @@ import puppeteer from "puppeteer";
   console.log(EbayproductInfo); // Display collected information in console
 
   // Close the browser
-  // await browser.close();
+  await browser.close();
 })();
