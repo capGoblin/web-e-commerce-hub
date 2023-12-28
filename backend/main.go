@@ -66,8 +66,6 @@ import (
 	"net/http"
 	"os/exec"
 
-	"github.com/rs/cors"
-
 	// "github.com/gofiber/fiber/v2"
 	// "github.com/gofiber/cors/v2"
 	"github.com/gorilla/mux"
@@ -77,28 +75,46 @@ import (
 
 func main() {
     router := mux.NewRouter()
-    router.HandleFunc("/", handleRoot).Methods("GET")
+    router.HandleFunc("/", handleRoot).Methods("GET", "OPTIONS")
 
-    corsWrapper := cors.New(cors.Options{
-        AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-        AllowedHeaders: []string{"Content-Type"},
-        AllowedOrigins: []string{"*"}, // Allow all origins
-    })
-
-    handler := corsWrapper.Handler(router)
-
-    log.Fatal(http.ListenAndServe(":8080", handler))
+    log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-    cmd := exec.Command("npx", "ts-node", "./script/index.ts")
-    out, err := cmd.Output()
+    // Set CORS headers
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 
-    if err != nil {
-        log.Fatal(err)
+    // Check if the request is for CORS preflight
+    if r.Method == "OPTIONS" {
+        w.Header().Set("Connection", "keep-alive")
+        w.WriteHeader(http.StatusNoContent)
+        return
     }
 
-    w.Write(out)
+    // Create a channel to receive the command output
+    outChan := make(chan []byte)
+    errChan := make(chan error)
+
+    // Execute the command asynchronously in a goroutine
+    go func() {
+        cmd := exec.Command("npx", "ts-node", "./script/index.ts")
+        out, err := cmd.Output()
+        if err != nil {
+            errChan <- err
+            return
+        }
+        outChan <- out
+    }()
+
+    // Wait for the command output or error using a select statement
+    select {
+    case out := <-outChan:
+        w.Write(out)
+    case err := <-errChan:
+        http.Error(w, "Failed to execute script", http.StatusInternalServerError)
+        log.Println("Error executing script:", err)
+    }
 }
 
 
