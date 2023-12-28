@@ -2,12 +2,9 @@
 
 // import (
 // 	"fmt"
-// 	"log"
 
 // 	"net/http"
 // 	"os/exec"
-
-// 	"github.com/rs/cors"
 // )
 
 // // func main() {
@@ -48,15 +45,15 @@
 // 			log.Fatal(err)
 // 		}
 
-// 		fmt.Fprint(w, string(out))
-// 	})
+// 		fmt.Println(string(out))
+// 	// })
 // 	// Create a CORS handler with allowed origins (replace "*" with your allowed origin)
-// 	corsHandler := cors.New(cors.Options{
-// 		AllowedOrigins:   []string{"*"},     // Set your allowed origins here
-// 		AllowedMethods:   []string{"GET"},   // Adjust the allowed HTTP methods
-// 		AllowedHeaders:   []string{"*"},     // Set allowed headers
-// 		AllowCredentials: true,              // Allow credentials such as cookies
-// 	}).Handler(mux)
+// 	// corsHandler := cors.New(cors.Options{
+// 	// 	AllowedOrigins:   []string{"*"},     // Set your allowed origins here
+// 	// 	AllowedMethods:   []string{"GET"},   // Adjust the allowed HTTP methods
+// 	// 	AllowedHeaders:   []string{"*"},     // Set allowed headers
+// 	// 	AllowCredentials: true,              // Allow credentials such as cookies
+// 	// }).Handler(mux)
 
 // 	// Start the server with CORS handling
 // 	log.Fatal(http.ListenAndServe(":8080", corsHandler))
@@ -65,31 +62,119 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os/exec"
 
-	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+
+	// "github.com/gofiber/fiber/v2"
+	// "github.com/gofiber/cors/v2"
+	"github.com/gorilla/mux"
+	// "github.com/gofiber/fiber/v2"
+	// "github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-    mux := mux.NewRouter()
-    mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        cmd := exec.Command("npx", "ts-node", "./script/index.ts")
-        out, err := cmd.Output()
+    router := mux.NewRouter()
+    router.HandleFunc("/", handleRoot).Methods("GET")
 
-        if err != nil {
-            log.Fatal(err)
-        }
-
-        fmt.Fprint(w, string(out))
+    corsWrapper := cors.New(cors.Options{
+        AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+        AllowedHeaders: []string{"Content-Type"},
+        AllowedOrigins: []string{"*"}, // Allow all origins
     })
 
-    // Wrap the router with the cors middleware
-    handler := cors.Default().Handler(mux)
+    handler := corsWrapper.Handler(router)
 
-    // Start the server with the cors middleware
     log.Fatal(http.ListenAndServe(":8080", handler))
 }
+
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+    cmd := exec.Command("npx", "ts-node", "./script/index.ts")
+    out, err := cmd.Output()
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    w.Write(out)
+}
+
+
+
+// func main() {
+//     // create router
+//     router := mux.NewRouter()
+
+//     // create subrouter
+//     subRouter := router.PathPrefix("/").Subrouter()
+//     subRouter.HandleFunc("/", handleRoot).Methods("GET")
+
+//     // wrap the subrouter with CORS and JSON content type middlewares
+//     enhancedSubRouter := enableCORS(jsonContentTypeMiddleware(subRouter))
+
+//     // replace the subrouter with the enhanced subrouter
+//     router.PathPrefix("/").Handler(enhancedSubRouter)
+
+//     // start server
+//     log.Fatal(http.ListenAndServe(":8080", router))
+// }
+
+// func handleRoot(w http.ResponseWriter, r *http.Request) {
+//     cmd := exec.Command("npx", "ts-node", "./script/index.ts")
+//     out, err := cmd.Output()
+
+//     if err != nil {
+//         log.Fatal(err)
+//     }
+
+//     w.Write(out)
+// }
+
+// func enableCORS(next http.Handler) http.Handler {
+//     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//         // Set CORS headers
+//         w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
+//         w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+//         w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+//         // Check if the request is for CORS preflight
+//         if r.Method == "OPTIONS" {
+//             w.WriteHeader(http.StatusOK)
+//             return
+//         }
+
+//         // Pass down the request to the next middleware (or final handler)
+//         next.ServeHTTP(w, r)
+//     })
+// }
+
+// func jsonContentTypeMiddleware(next http.Handler) http.Handler {
+//     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//         // Set JSON Content-Type
+//         w.Header().Set("Content-Type", "application/json")
+//         next.ServeHTTP(w, r)
+//     })
+// }
+
+
+// func main() {
+//     mux := mux.NewRouter()
+//     mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+//         cmd := exec.Command("npx", "ts-node", "./script/index.ts")
+//         out, err := cmd.Output()
+
+//         if err != nil {
+//             log.Fatal(err)
+//         }
+
+//         fmt.Fprint(w, string(out))
+//     })
+
+//     // Wrap the router with the cors middleware
+//     handler := cors.Default().Handler(mux)
+
+//     // Start the server with the cors middleware
+//     log.Fatal(http.ListenAndServe(":8080", handler))
+// }
