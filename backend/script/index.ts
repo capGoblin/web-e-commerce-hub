@@ -1,28 +1,36 @@
 import puppeteer from "puppeteer";
 
 (async () => {
+  console.log("Launching browser...");
   const browser = await puppeteer.launch({
-    //   "C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1",
-    headless: false, // Launch a visible browser
+    headless: false,
     executablePath:
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // Path to your installed Chrome browser
-
-    userDataDir: `C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data`,
-    args: [
-      "--profile-directory=Default",
-      // "--no-sandbox",
-      // "--disable-features=ImprovedCookieControls",
-      // "--disable-setuid-sandbox",
-    ],
-
-    // args: [
-    //   //   "--disable-extensions-except=/path/to/my/extension",
-    //   //   "--load-extension=/path/to/my/extension",
-    //   "--user-data-dir=C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1",
-    //   //'--profile-directory=Profile 1'
-    // ],
-    // userDataDir:
+      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    userDataDir: "C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data",
+    args: ["--profile-directory=Default", "--no-sandbox"],
   });
+  console.log("Browser launched successfully!");
+  // const browser = await puppeteer.launch({
+  //   //   "C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1",
+  //   headless: false, // Launch a visible browser
+  //   executablePath:
+  //     "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // Path to your installed Chrome browser
+
+  //   userDataDir: `C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data`,
+  //   args: [
+  //     "--profile-directory=Profile 1",
+  //     // "--no-sandbox",
+  //     // "--disable-features=ImprovedCookieControls",
+  //     // "--disable-setuid-sandbox",
+  //   ],
+  //   // args: [
+  //   //   //   "--disable-extensions-except=/path/to/my/extension",
+  //   //   //   "--load-extension=/path/to/my/extension",
+  //   //   "--user-data-dir=C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1",
+  //   //   //'--profile-directory=Profile 1'
+  //   // ],
+  //   // userDataDir:
+  // });
 
   const amazonPage = await browser.newPage();
   await amazonPage.goto("https://www.amazon.com");
