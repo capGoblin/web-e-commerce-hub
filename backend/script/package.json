@@ -2,10 +2,10 @@
   "name": "web-ecomm",
   "version": "1.0.0",
   "description": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "node index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
