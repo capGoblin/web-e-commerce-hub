@@ -1,7 +1,22 @@
 import puppeteer from "puppeteer";
+interface Product {
+  title: string;
+  imgSrc: string;
+  price: string;
+}
+
+interface Site {
+  id: number;
+  name: string;
+  products: Product[];
+}
+
+interface MyComponentProps {
+  sites: Site[];
+}
 
 (async () => {
-  console.log("Launching browser...");
+  // console.log("Launching browser...");
   const browser = await puppeteer.launch({
     headless: false,
     executablePath:
@@ -9,7 +24,7 @@ import puppeteer from "puppeteer";
     userDataDir: "C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data",
     args: ["--profile-directory=Default", "--no-sandbox"],
   });
-  console.log("Browser launched successfully!");
+  // console.log("Browser launched successfully!");
   // const browser = await puppeteer.launch({
   //   //   "C:\\Users\\dhars\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1",
   //   headless: false, // Launch a visible browser
@@ -55,36 +70,40 @@ import puppeteer from "puppeteer";
       document.querySelectorAll('[data-component-type="s-search-result"]')
     ).slice(0, 10);
 
-    return products.map((product) => {
-      const sponsoredElement = product.querySelector(
-        ".puis-sponsored-label-text"
-      );
-      if (sponsoredElement) {
-        return null; // Skip sponsored products
-      }
-      const titleElement = product.querySelector(
-        "span.a-size-medium.a-color-base.a-text-normal"
-      );
-      const title = titleElement
-        ? titleElement.textContent?.trim()
-        : "No title";
+    const p = products
+      .map((product) => {
+        const sponsoredElement = product.querySelector(
+          ".puis-sponsored-label-text"
+        );
+        if (sponsoredElement) {
+          return null; // Skip sponsored products
+        }
+        const titleElement = product.querySelector(
+          "span.a-size-medium.a-color-base.a-text-normal"
+        );
+        const title = titleElement
+          ? titleElement.textContent?.trim()
+          : "No title";
 
-      const imageElement = product.querySelector("img.s-image");
-      const imageSrc = imageElement
-        ? imageElement.getAttribute("src")
-        : "No image";
+        const imageElement = product.querySelector("img.s-image");
+        const imageSrc = imageElement
+          ? imageElement.getAttribute("src")
+          : "No image";
 
-      const priceElement = product.querySelector("span.a-price-whole");
-      const price = priceElement
-        ? priceElement.textContent?.trim()
-        : "No price";
+        const priceElement = product.querySelector("span.a-price-whole");
+        const price = priceElement
+          ? priceElement.textContent?.trim()
+          : "No price";
 
-      return { title, imageSrc, price };
-    });
+        return { title, imgSrc: imageSrc, price };
+      })
+      .filter(Boolean);
+    console.log(p);
+    return p.filter((p) => p !== null);
   });
 
   // ... Perform scraping logic for Amazon
-  console.log(JSON.stringify(AmazonproductInfo));
+  // console.log(JSON.stringify(AmazonproductInfo));
 
   // ... Perform scraping logic for Amazon
 
@@ -111,28 +130,52 @@ import puppeteer from "puppeteer";
       11
     );
 
-    return products.map((product) => {
-      const titleElement = product.querySelector(".s-item__title");
-      const title = titleElement?.textContent?.trim() ?? "No title";
+    const p = products
+      .map((product) => {
+        const titleElement = product.querySelector(".s-item__title");
+        const title = titleElement?.textContent?.trim() ?? "No title";
 
-      const imageElement = product.querySelector(".s-item__image img");
-      const imageSrc = imageElement
-        ? imageElement.getAttribute("src")
-        : "No image";
+        const imageElement = product.querySelector(".s-item__image img");
+        const imageSrc = imageElement
+          ? imageElement.getAttribute("src")
+          : "No image";
 
-      const priceElement = product.querySelector(".s-item__price");
-      const price =
-        priceElement && priceElement.textContent
-          ? priceElement.textContent.trim()
-          : "No price";
+        const priceElement = product.querySelector(".s-item__price");
+        const price =
+          priceElement && priceElement.textContent
+            ? priceElement.textContent.trim()
+            : "No price";
 
-      return { title, imageSrc, price };
-    });
+        return { title, imgSrc: imageSrc, price };
+      })
+      .filter(Boolean);
+
+    return p.filter((p) => p !== null) as Product[];
   });
 
   // console.log(productInfo);
   // Display collected information in console
-  console.log(JSON.stringify(EbayproductInfo));
+  // console.log(JSON.stringify(EbayproductInfo));
+  const amazonPagee = AmazonproductInfo;
+  const ebayPagee = EbayproductInfo;
+
+  // console.log(amazonPagee);
+  // console.log(ebayPagee);
+
+  const sites = [
+    {
+      id: 1,
+      name: "Amazon",
+      products: JSON.stringify(amazonPagee),
+    },
+    {
+      id: 2,
+      name: "Ebay",
+      products: JSON.stringify(ebayPagee),
+    },
+  ];
+
+  console.log(sites);
 
   // Close the browser
   await browser.close();

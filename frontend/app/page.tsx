@@ -8,9 +8,23 @@ import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import { Component } from "@/components/component";
+interface Product {
+  title: string;
+  imgSrc: string;
+  price: string;
+}
 
+interface Site {
+  id: number;
+  name: string;
+  products: Product[];
+}
+
+interface MyComponentProps {
+  sites: Site[];
+}
 export default function Home() {
-  const [data, setData] = useState<string>("");
+  const [data, setData] = useState<Site[]>([]);
 
   useEffect(() => {
     //   fetch('http://localhost:8080', {
@@ -24,8 +38,25 @@ export default function Home() {
     // .then(data => setData(data));;
 
     fetch("http://localhost:8080")
-      .then((response) => response.text())
-      .then((data) => setData(data));
+      .then((response) => response.json()) // Extract JSON data from the response
+      .then((data: Site[]): void => {
+        console.log(data);
+        data.forEach((item) => {
+          // Log the products string before parsing it
+          console.log(item.products);
+          try {
+            // Ensure item.products is a string before parsing it
+            if (typeof item.products === "string") {
+              item.products = JSON.parse(item.products);
+            }
+          } catch (error) {
+            console.error("Error parsing products:", error);
+          }
+        });
+        setData(data);
+        // Assuming setData is your state setter function
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   // useEffect(() => {
@@ -45,8 +76,14 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Component sites={[]} />
-      {data && <div>{data}</div>}
+      <Component sites={data} />
+      {data && (
+        <div>
+          {data.map((site) => (
+            <div key={site.id}>{site.name}</div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

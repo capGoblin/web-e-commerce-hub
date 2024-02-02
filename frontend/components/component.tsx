@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 interface Product {
   title: string;
   imgSrc: string;
-  price: number;
+  price: string;
 }
 
 interface Site {
