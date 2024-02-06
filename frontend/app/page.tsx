@@ -14,17 +14,22 @@ interface Product {
   price: string;
 }
 
-interface Site {
-  id: number;
-  name: string;
-  products: Product[];
+// interface Site {
+//   id: number;
+//   name: string;
+//   products: Product[];
+// }
+
+interface SiteData {
+  amazonPagee: Product[];
+  ebayPagee: Product[];
 }
 
 interface MyComponentProps {
-  sites: Site[];
+  sites: SiteData;
 }
 export default function Home() {
-  const [data, setData] = useState<Site[]>([]);
+  const [data, setData] = useState<SiteData>();
 
   useEffect(() => {
     //   fetch('http://localhost:8080', {
@@ -39,20 +44,20 @@ export default function Home() {
 
     fetch("http://localhost:8080")
       .then((response) => response.json()) // Extract JSON data from the response
-      .then((data: Site[]): void => {
+      .then((data): void => {
         console.log(data);
-        data.forEach((item) => {
-          // Log the products string before parsing it
-          console.log(item.products);
-          try {
-            // Ensure item.products is a string before parsing it
-            if (typeof item.products === "string") {
-              item.products = JSON.parse(item.products);
-            }
-          } catch (error) {
-            console.error("Error parsing products:", error);
-          }
-        });
+        // data.forEach((item) => {
+        //   // Log the products string before parsing it
+        //   console.log(item.products);
+        //   try {
+        //     // Ensure item.products is a string before parsing it
+        //     if (typeof item.products === "string") {
+        //       item.products = JSON.parse(item.products);
+        //     }
+        //   } catch (error) {
+        //     console.error("Error parsing products:", error);
+        //   }
+        // });
         setData(data);
         // Assuming setData is your state setter function
       })
@@ -76,14 +81,14 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Component sites={data} />
-      {data && (
+      <Component data={data} />
+      {/* {data && (
         <div>
           {data.map((site) => (
             <div key={site.id}>{site.name}</div>
           ))}
         </div>
-      )}
+      )} */}
     </main>
   );
 }

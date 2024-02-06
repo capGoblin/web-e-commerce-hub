@@ -9,23 +9,38 @@ interface Product {
   price: string;
 }
 
-interface Site {
-  id: number;
-  name: string;
-  products: Product[];
+// interface Site {
+//   id: number;
+//   name: string;
+//   products: Product[];
+// }
+
+// interface MyComponentProps {
+//   sites: Site[];
+// }
+
+interface Product {
+  title: string;
+  imgSrc: string;
+  price: string;
+}
+
+interface SiteData {
+  amazonPagee: Product[];
+  ebayPagee: Product[];
 }
 
 interface MyComponentProps {
-  sites: Site[];
+  data: SiteData | undefined;
 }
-
-export const Component: FC<MyComponentProps> = ({ sites }) => {
+export const Component: FC<MyComponentProps> = ({ data }) => {
+  console.log(data);
   return (
     <div>
-      {sites.map((site) => (
-        <div key={site.id}>
-          <h2>{site.name}</h2>
-          {site.products.map((product, index) => (
+      {data?.amazonPagee && data.amazonPagee.length > 0 && (
+        <div>
+          <h2>Amazon</h2>
+          {data.amazonPagee.map((product, index) => (
             <div key={index}>
               <h3>{product.title}</h3>
               <img src={product.imgSrc} alt={product.title} />
@@ -33,7 +48,19 @@ export const Component: FC<MyComponentProps> = ({ sites }) => {
             </div>
           ))}
         </div>
-      ))}
+      )}
+      {data?.ebayPagee && data.ebayPagee.length > 0 && (
+        <div>
+          <h2>eBay</h2>
+          {data.ebayPagee.map((product, index) => (
+            <div key={index}>
+              <h3>{product.title}</h3>
+              <img src={product.imgSrc} alt={product.title} />
+              <p>{product.price}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
     // <div key="1" className="flex flex-col min-h-screen">
     //   <header className="flex h-14 items-center border-b px-4 md:px-6">

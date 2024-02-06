@@ -162,21 +162,25 @@ interface MyComponentProps {
   // console.log(amazonPagee);
   // console.log(ebayPagee);
 
-  const sites = [
-    {
-      id: 1,
-      name: "Amazon",
-      products: JSON.stringify(amazonPagee),
-    },
-    {
-      id: 2,
-      name: "Ebay",
-      products: JSON.stringify(ebayPagee),
-    },
-  ];
+  // const sites = [
+  //   {
+  //     id: 1,
+  //     name: "Amazon",
+  //     products: JSON.stringify(amazonPagee),
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Ebay",
+  //     products: JSON.stringify(ebayPagee),
+  //   },
+  // ];
+  const pageData = {
+    amazonPagee: amazonPagee,
+    ebayPagee: ebayPagee,
+  };
 
-  console.log(sites);
-
+  // Log the entire object
+  console.log(JSON.stringify(pageData));
   // Close the browser
   await browser.close();
 })();
