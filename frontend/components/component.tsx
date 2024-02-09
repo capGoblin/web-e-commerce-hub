@@ -26,8 +26,8 @@ interface Product {
 }
 
 interface SiteData {
-  amazonPagee: Product[];
-  ebayPagee: Product[];
+  amazonPage: Product[];
+  ebayPage: Product[];
 }
 
 interface MyComponentProps {
@@ -37,10 +37,10 @@ export const Component: FC<MyComponentProps> = ({ data }) => {
   console.log(data);
   return (
     <div>
-      {data?.amazonPagee && data.amazonPagee.length > 0 && (
+      {data?.amazonPage && data.amazonPage.length > 0 && (
         <div>
           <h2>Amazon</h2>
-          {data.amazonPagee.map((product, index) => (
+          {data.amazonPage.map((product, index) => (
             <div key={index}>
               <h3>{product.title}</h3>
               <img src={product.imgSrc} alt={product.title} />
@@ -49,10 +49,10 @@ export const Component: FC<MyComponentProps> = ({ data }) => {
           ))}
         </div>
       )}
-      {data?.ebayPagee && data.ebayPagee.length > 0 && (
+      {data?.ebayPage && data.ebayPage.length > 0 && (
         <div>
           <h2>eBay</h2>
-          {data.ebayPagee.map((product, index) => (
+          {data.ebayPage.map((product, index) => (
             <div key={index}>
               <h3>{product.title}</h3>
               <img src={product.imgSrc} alt={product.title} />

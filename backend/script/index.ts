@@ -156,8 +156,8 @@ interface MyComponentProps {
   // console.log(productInfo);
   // Display collected information in console
   // console.log(JSON.stringify(EbayproductInfo));
-  const amazonPagee = AmazonproductInfo;
-  const ebayPagee = EbayproductInfo;
+  const amazonProducts = AmazonproductInfo;
+  const ebayProducts = EbayproductInfo;
 
   // console.log(amazonPagee);
   // console.log(ebayPagee);
@@ -175,8 +175,8 @@ interface MyComponentProps {
   //   },
   // ];
   const pageData = {
-    amazonPagee: amazonPagee,
-    ebayPagee: ebayPagee,
+    amazonPage: amazonProducts,
+    ebayPage: ebayProducts,
   };
 
   // Log the entire object
