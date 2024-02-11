@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import { useEffect, useState } from "react";
 import { Component } from "@/components/component";
+import supabase from "@/lib/supabaseClient";
 interface Product {
   title: string;
   imgSrc: string;
