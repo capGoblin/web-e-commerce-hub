@@ -1,8 +1,9 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
 
 interface Product {
   title: string;
@@ -36,6 +37,41 @@ interface MyComponentProps {
 }
 export const Component: FC<MyComponentProps> = ({ data }) => {
   console.log(data);
+  useEffect(() => {
+    if (data) {
+      if (data.amazonPage) {
+        data.amazonPage.forEach(async (row) => {
+          const { data: insertedData, error } = await supabase
+            .from("AmazonPage")
+            .insert([
+              { title: row.title, imgSrc: row.imgSrc, price: row.price },
+            ]);
+
+          if (error) {
+            console.error("Error inserting row to AmazonPage:", error);
+          } else {
+            console.log("Inserted row to AmazonPage:", insertedData);
+          }
+        });
+      }
+
+      if (data.ebayPage) {
+        data.ebayPage.forEach(async (row) => {
+          const { data: insertedData, error } = await supabase
+            .from("EbayPage")
+            .insert([
+              { title: row.title, imgSrc: row.imgSrc, price: row.price },
+            ]);
+
+          if (error) {
+            console.error("Error inserting row to EbayPage:", error);
+          } else {
+            console.log("Inserted row to EbayPage:", insertedData);
+          }
+        });
+      }
+    }
+  }, [data]);
   return (
     <>
       <div>
