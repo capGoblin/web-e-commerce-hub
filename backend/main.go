@@ -14,7 +14,7 @@ import (
 
 func main() {
     router := mux.NewRouter()
-    router.HandleFunc("/", handleRoot).Methods("GET", "OPTIONS")
+    router.HandleFunc("/{productName}", handleRoot).Methods("GET", "OPTIONS")
 
     log.Fatal(http.ListenAndServe(":8080", router))
 }
@@ -31,20 +31,24 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // Extract the product name from the URL path
+    vars := mux.Vars(r)
+    productName := vars["productName"]
+
     // Create a channel to receive the command output
     outChan := make(chan []byte)
     errChan := make(chan error)
 
     // Execute the command asynchronously in a goroutine
-    go func() {
-        cmd := exec.Command("npx", "ts-node", "./script/index.ts")
+    go func(productName string) {
+        cmd := exec.Command("npx", "ts-node", "./script/index.ts", productName)
         out, err := cmd.Output()
         if err != nil {
             errChan <- err
             return
         }
         outChan <- out
-    }()
+    }(productName)
 
     // Wait for the command output or error using a select statement
     select {
