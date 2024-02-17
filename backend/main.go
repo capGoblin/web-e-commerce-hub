@@ -40,15 +40,17 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
     errChan := make(chan error)
 
     // Execute the command asynchronously in a goroutine
-    go func(productName string) {
-        cmd := exec.Command("npx", "ts-node", "./script/index.ts", productName)
-        out, err := cmd.Output()
-        if err != nil {
-            errChan <- err
-            return
-        }
-        outChan <- out
-    }(productName)
+    if productName != "" {
+        go func(productName string) {
+            cmd := exec.Command("npx", "ts-node", "./script/index.ts", productName)
+            out, err := cmd.Output()
+            if err != nil {
+                errChan <- err
+                return
+            }
+            outChan <- out
+        }(productName)
+    }
 
     // Wait for the command output or error using a select statement
     select {

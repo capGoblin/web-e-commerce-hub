@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,10 @@ interface SiteData {
 interface MyComponentProps {
   data: SiteData | undefined;
 }
-export const Component: FC<MyComponentProps> = ({ data }) => {
+export const Component: React.FC = () => {
+  const [data, setData] = useState<SiteData>();
+  const [productName, setProductName] = useState("");
+
   console.log(data);
   useEffect(() => {
     if (data) {
@@ -72,6 +75,24 @@ export const Component: FC<MyComponentProps> = ({ data }) => {
       }
     }
   }, [data]);
+
+  const handleSearch = () => {
+    if (productName.trim() !== "") {
+      fetch(`http://localhost:8080/${encodeURIComponent(productName)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((error) => console.error(error));
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearch();
+    }
+  };
   return (
     <>
       <div>
@@ -107,13 +128,19 @@ export const Component: FC<MyComponentProps> = ({ data }) => {
               <MountainIcon className="h-6 w-6" />
               <span className="text-lg font-semibold">Acme Inc</span>
             </Link>
-            <form className="flex-1 ml-auto">
+            <form
+              className="flex-1 ml-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="relative">
                 <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <Input
                   className="w-full bg-white shadow-none appearance-none pl-8 md:w-2/3 lg:w-1/3 dark:bg-gray-950"
                   placeholder="Search products..."
                   type="search"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
               </div>
             </form>
