@@ -14,7 +14,7 @@ interface Site {
 interface MyComponentProps {
   sites: Site[];
 }
-
+const productName = process.argv[2]; // Get productName from command-line arguments
 (async () => {
   // console.log("Launching browser...");
   const browser = await puppeteer.launch({
@@ -54,7 +54,7 @@ interface MyComponentProps {
   await amazonPage.waitForSelector("#twotabsearchtextbox");
 
   // Type your search query into the search bar
-  await amazonPage.type("#twotabsearchtextbox", "Redmi 13C");
+  await amazonPage.type("#twotabsearchtextbox", `${productName}`);
 
   // Simulate pressing the Enter key to submit the search
   await amazonPage.keyboard.press("Enter");
@@ -115,7 +115,7 @@ interface MyComponentProps {
   await ebayPage.waitForSelector("#gh-ac");
 
   // Type your search query into the search bar
-  await ebayPage.type("#gh-ac", "Redmi 13C");
+  await ebayPage.type("#gh-ac", `${productName}`);
 
   // Simulate pressing the Enter key to submit the search
   await ebayPage.keyboard.press("Enter");
