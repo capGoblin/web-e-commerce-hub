@@ -68,7 +68,7 @@ const productName = process.argv[2]; // Get productName from command-line argume
   const AmazonproductInfo = await amazonPage.evaluate(() => {
     const products = Array.from(
       document.querySelectorAll('[data-component-type="s-search-result"]')
-    ).slice(0, 10);
+    ).slice(0, 20);
 
     const p = products
       .map((product) => {
@@ -127,7 +127,7 @@ const productName = process.argv[2]; // Get productName from command-line argume
   const EbayproductInfo = await ebayPage.evaluate(() => {
     const products = Array.from(document.querySelectorAll(".s-item")).slice(
       1,
-      11
+      21
     );
 
     const p = products
