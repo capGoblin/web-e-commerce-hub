@@ -14,12 +14,6 @@ interface Product {
   price: string;
 }
 
-// interface Site {
-//   id: number;
-//   name: string;
-//   products: Product[];
-// }
-
 interface SiteData {
   amazonPage: Product[];
   ebayPage: Product[];
