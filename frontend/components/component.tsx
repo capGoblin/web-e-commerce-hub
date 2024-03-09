@@ -237,6 +237,8 @@ export const Component: React.FC = () => {
                       ))}
                     </div>
                   )}
+                  <iframe src="https://pricehistoryapp.com/embed/fire-boltt-ninja-pro-max-plus-smartwatch-afcf" width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+
                   {/* <div className="grid gap-2">
                   <img
                     alt="Product 2"
